@@ -1,0 +1,144 @@
+from .linked_list import LinkedList
+
+
+class Graph:
+    """Grafo direcionado, ponderado e rotulado representado por listas de adjacência."""
+
+    def __init__(self, size: int):
+        self.size = size
+        self.adjacency_list = [LinkedList() for _ in range(size)]
+        self.vertices = list(range(size))
+
+    def create_adjacency(self, i: int, j: int, weight: int):
+        """Cria adjacência direcionada de i → j com o peso especificado."""
+        self.adjacency_list[i].insert(j, weight)
+
+    def remove_adjacency(self, i: int, j: int):
+        """Remove a adjacência direcionada de i → j."""
+        self.adjacency_list[i].remove(j)
+
+    def print_adjacency(self):
+        """Imprime as listas de adjacência do grafo."""
+        for i in range(self.size):
+            label = self.vertices[i]
+            nodes = [
+                f"{self.vertices[node.destination]}(w={node.weight})"
+                for node in self.adjacency_list[i]
+            ]
+            content = " -> ".join(nodes) if nodes else "None"
+            print(f"{label} -> {content}")
+
+    def update_information(self, i: int, value: str):
+        """Atualiza o rótulo do vértice i."""
+        self.vertices[i] = value
+
+    def adjacent_vertices(self, vertex: int, adj: list) -> int:
+        """
+        Preenche adj com os índices dos vértices adjacentes ao vértice especificado.
+        Retorna o número de adjacentes.
+        """
+        adj.clear()
+        adj.extend(self.adjacency_list[vertex].destinations())
+        return len(adj)
+
+    def print_adjacent_vertices(self, vertex: int):
+        """Imprime os vértices adjacentes ao vértice especificado."""
+        adj = []
+        count = self.adjacent_vertices(vertex, adj)
+        labels = [self.vertices[j] for j in adj]
+        print(f"{count} adjacente(s) ao vértice {self.vertices[vertex]}: {labels}")
+
+    def convert_to_adj_matrix(self) -> list[list[int]]:
+        """
+        Converte as listas de adjacência para uma matriz de adjacência. O(n + m)
+        Retorna uma matriz n×n onde matrix[i][j] = 1 se existe aresta i → j.
+        Não modifica o estado interno do grafo.
+        """
+        matrix = [[0] * self.size for _ in range(self.size)]
+        for i in range(self.size):
+            for node in self.adjacency_list[i]:
+                matrix[i][node.destination] = 1
+        return matrix
+
+    def warshall(self) -> list[list[int]]:
+        """
+        Executa o algoritmo de Warshall sobre uma cópia da matriz de adjacência.
+        Retorna a matriz de alcançabilidade (fechamento transitivo). O(n³)
+        Para cada par (i, j), matrix[i][j] = 1 se j é alcançável a partir de i.
+        """
+        matrix = self.convert_to_adj_matrix()
+        for k in range(self.size):
+            for i in range(self.size):
+                for j in range(self.size):
+                    if matrix[i][k] and matrix[k][j]:
+                        matrix[i][j] = 1
+        return matrix
+
+    def print_reachability(self):
+        """Imprime a matriz de alcançabilidade com os rótulos dos vértices."""
+        matrix = self.warshall()
+        header = "    " + "  ".join(f"{self.vertices[j]:>2}" for j in range(self.size))
+        print(header)
+        for i in range(self.size):
+            row = "   ".join(str(matrix[i][j]) for j in range(self.size))
+            print(f"{self.vertices[i]:>2} [ {row} ]")
+
+    def dijkstra(self, origin: int) -> tuple[list[int], list[int]]:
+        """
+        Executa o algoritmo de Dijkstra a partir do vértice de origem. O(n²)
+        Retorna (distance, previous):
+            distance[i] → custo mínimo de origin até i (float('inf') se inalcançável)
+            previous[i] → índice do vértice anterior no caminho mínimo até i (-1 se nenhum)
+        """
+        distance = [float("inf")] * self.size
+        previous = [-1] * self.size
+        visited = [False] * self.size
+
+        distance[origin] = 0
+
+        for _ in range(self.size):
+            u = -1
+            for v in range(self.size):
+                if not visited[v] and (u == -1 or distance[v] < distance[u]):
+                    u = v
+
+            if distance[u] == float("inf"):
+                break
+
+            visited[u] = True
+
+            for node in self.adjacency_list[u]:
+                new_distance = distance[u] + node.weight
+                if new_distance < distance[node.destination]:
+                    distance[node.destination] = new_distance
+                    previous[node.destination] = u
+
+        return distance, previous
+
+    def reconstruct_path(self, origin: int, target: int, previous: list[int]) -> str:
+        """
+        Reconstrói o caminho mínimo de origin até target usando o vetor previous.
+        """
+        path = []
+        current = target
+        while current != -1:
+            path.append(self.vertices[current])
+            current = previous[current]
+        if path[-1] != self.vertices[origin]:
+            return "inalcançável"
+        path.reverse()
+        return " → ".join(str(v) for v in path)
+
+    def print_dijkstra(self, origin: int):
+        """Imprime as distâncias mínimas e os caminhos a partir da origem."""
+        distance, previous = self.dijkstra(origin)
+        origin_label = self.vertices[origin]
+        print(f"Distâncias mínimas a partir de {origin_label}:")
+        for i in range(self.size):
+            if distance[i] == float("inf"):
+                cost = "∞"
+                path = "inalcançável"
+            else:
+                cost = distance[i]
+                path = self.reconstruct_path(origin, i, previous)
+            print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")

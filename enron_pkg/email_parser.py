@@ -169,7 +169,7 @@ def print_summary(frequency: dict[tuple[str, str], int]):
     print(f"{'='*50}")
     print(f"Endereços únicos (futuros vértices): {len(addresses)}")
     print(f"Conexões únicas (futuras arestas):   {len(frequency)}")
-    print(f"Total de mensagens enviadas:          {total_msgs}")
+    print(f"Total de mensagens enviadas:         {total_msgs}")
     print(f"{'='*50}")
 
     top_pairs = sorted(frequency.items(), key=lambda item: item[1], reverse=True)[:10]

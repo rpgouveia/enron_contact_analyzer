@@ -6,68 +6,78 @@ Cada arquivo dentro de sent é um e-mail em texto puro (RFC 822).
 import os
 import email
 from email import policy
+from dataclasses import dataclass
 from collections import defaultdict
 from tqdm import tqdm
 
 
-def parse_email_file(filepath: str) -> tuple[str | None, list[str]]:
-    """
-    Lê um arquivo de e-mail e extrai o remetente e os destinatários.
+@dataclass
+class Email:
+    """Representa um e-mail parseado com remetente e destinatários."""
 
-    Retorna:
-        (sender, recipients) — sender é uma string (endereço),
-        recipients é uma lista de endereços (To + Cc + Bcc).
-        Retorna (None, []) se não conseguir extrair.
-    """
-    try:
-        with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
-            msg = email.message_from_file(f, policy=policy.default)
-    except Exception as e:
-        print(f"[AVISO] Erro ao ler {filepath}: {e}")
-        return None, []
+    sender: str
+    recipients: list[str]
 
-    sender = _extract_address(msg.get("From", ""))
+    @staticmethod
+    def from_file(filepath: str) -> "Email | None":
+        """
+        Lê um arquivo de e-mail e retorna um objeto Email.
+        Retorna None se não conseguir extrair remetente ou destinatários.
+        """
+        try:
+            with open(filepath, "r", encoding="utf-8", errors="ignore") as file:
+                msg = email.message_from_file(file, policy=policy.default)
+        except Exception as error:
+            print(f"[AVISO] Erro ao ler {filepath}: {error}")
+            return None
 
-    recipients = []
-    for header in ("To", "Cc", "Bcc"):
-        raw = msg.get(header, "")
-        if raw:
-            recipients.extend(_extract_addresses(raw))
+        sender = Email.__extract_address(msg.get("From", ""))
+        if sender is None:
+            return None
 
-    return sender, recipients
+        recipients = []
+        for header in ("To", "Cc", "Bcc"):
+            raw = msg.get(header, "")
+            if raw:
+                recipients.extend(Email.__extract_addresses(raw))
 
+        if not recipients:
+            return None
 
-def _extract_address(raw: str) -> str | None:
-    """
-    Extrai um único endereço de e-mail de uma string.
-    Ex: 'John Doe <john.doe@enron.com>' → 'john.doe@enron.com'
-    """
-    raw = raw.strip()
-    if not raw:
-        return None
+        return Email(sender=sender, recipients=recipients)
 
-    if "<" in raw and ">" in raw:
-        start = raw.index("<") + 1
-        end = raw.index(">")
-        addr = raw[start:end].strip().lower()
-    else:
-        addr = raw.strip().lower()
+    @staticmethod
+    def __extract_address(raw: str) -> str | None:
+        """
+        Extrai um único endereço de e-mail de uma string.
+        Ex: 'John Doe <john.doe@enron.com>' → 'john.doe@enron.com'
+        """
+        raw = raw.strip()
+        if not raw:
+            return None
 
-    return addr if "@" in addr else None
+        if "<" in raw and ">" in raw:
+            start = raw.index("<") + 1
+            end = raw.index(">")
+            address = raw[start:end].strip().lower()
+        else:
+            address = raw.strip().lower()
 
+        return address if "@" in address else None
 
-def _extract_addresses(raw: str) -> list[str]:
-    """
-    Extrai múltiplos endereços de uma string separada por vírgulas.
-    Ex: 'a@enron.com, B <b@enron.com>' → ['a@enron.com', 'b@enron.com']
-    """
-    addresses = []
-    raw = raw.replace("\n", " ").replace("\r", " ")
-    for part in raw.split(","):
-        addr = _extract_address(part)
-        if addr:
-            addresses.append(addr)
-    return addresses
+    @staticmethod
+    def __extract_addresses(raw: str) -> list[str]:
+        """
+        Extrai múltiplos endereços de uma string separada por vírgulas.
+        Ex: 'a@enron.com, B <b@enron.com>' → ['a@enron.com', 'b@enron.com']
+        """
+        addresses = []
+        raw = raw.replace("\n", " ").replace("\r", " ")
+        for part in raw.split(","):
+            address = Email.__extract_address(part)
+            if address:
+                addresses.append(address)
+        return addresses
 
 
 def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str, str], int]:
@@ -93,8 +103,8 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
         return dict(frequency)
 
     user_dirs = sorted(
-        d for d in os.listdir(database_path)
-        if os.path.isdir(os.path.join(database_path, d)) and not d.startswith(".")
+        entry for entry in os.listdir(database_path)
+        if os.path.isdir(os.path.join(database_path, entry)) and not entry.startswith(".")
     )
 
     print(f"Encontrados {len(user_dirs)} usuários no dataset.\n")
@@ -106,8 +116,9 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
             continue
 
         email_files = sorted(
-            f for f in os.listdir(sent_path)
-            if os.path.isfile(os.path.join(sent_path, f)) and not f.startswith(".")
+            filename for filename in os.listdir(sent_path)
+            if os.path.isfile(os.path.join(sent_path, filename))
+            and not filename.startswith(".")
         )
 
         for email_file in tqdm(
@@ -117,17 +128,17 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
             leave=False,
         ):
             filepath = os.path.join(sent_path, email_file)
-            sender, recipients = parse_email_file(filepath)
+            parsed = Email.from_file(filepath)
 
-            if sender is None or not recipients:
+            if parsed is None:
                 total_errors += 1
                 continue
 
             total_emails += 1
-            for recipient in recipients:
+            for recipient in parsed.recipients:
                 # Evitar contar e-mails enviados para si mesmo (auto-envio)
-                if recipient != sender:
-                    frequency[(sender, recipient)] += 1
+                if recipient != parsed.sender:
+                    frequency[(parsed.sender, recipient)] += 1
 
     print(f"\nTotal de e-mails processados: {total_emails}")
     print(f"Total de e-mails ignorados (sem remetente/destinatário): {total_errors}")
@@ -161,7 +172,7 @@ def print_summary(frequency: dict[tuple[str, str], int]):
     print(f"Total de mensagens enviadas:          {total_msgs}")
     print(f"{'='*50}")
 
-    top_pairs = sorted(frequency.items(), key=lambda x: x[1], reverse=True)[:10]
+    top_pairs = sorted(frequency.items(), key=lambda item: item[1], reverse=True)[:10]
     print(f"\nTop 10 pares com mais mensagens:")
     for (sender, recipient), count in top_pairs:
         print(f"  {sender} → {recipient}: {count} mensagem(ns)")

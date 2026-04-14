@@ -6,6 +6,7 @@ Cada arquivo dentro de sent é um e-mail em texto puro (RFC 822).
 import os
 import email
 from email import policy
+from datetime import datetime
 from dataclasses import dataclass
 from collections import defaultdict
 from tqdm import tqdm
@@ -80,7 +81,25 @@ class Email:
         return addresses
 
 
-def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str, str], int]:
+def load_emails(
+            database_path: str, 
+            sent_folder: str = "sent", 
+            log_dir: str = "logs"
+        ) -> dict[tuple[str, str], int]:
+    """
+    Percorre todas as pastas de usuários no dataset e lê os e-mails
+    da pasta 'sent' de cada um.
+
+    Args:
+        database_path: caminho raiz do dataset (ex: './enron_mail_database')
+        sent_folder: nome da subpasta de enviados (padrão: 'sent')
+        log_dir: diretório onde salvar o log de arquivos ignorados
+
+    Retorna:
+        Um dicionário onde:
+            chave = (remetente, destinatário)
+            valor = número de e-mails enviados de remetente para destinatário
+    """
     frequency = defaultdict(int)
     total_emails = 0
     skipped_files = []
@@ -127,12 +146,29 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
 
     print(f"\nTotal de e-mails processados: {total_emails}")
     print(f"Total de e-mails ignorados: {len(skipped_files)}")
-    if skipped_files:
-        for path in skipped_files:
-            print(f"  - {path}")
     print(f"Total de conexões únicas (remetente → destinatário): {len(frequency)}")
 
+    if skipped_files:
+        _save_skipped_log(skipped_files, log_dir)
+
     return dict(frequency)
+
+
+def _save_skipped_log(skipped_files: list[str], log_dir: str):
+    """Salva a lista de arquivos ignorados em um arquivo de log com timestamp."""
+    os.makedirs(log_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_path = os.path.join(log_dir, f"skipped_emails_{timestamp}.log")
+
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        log_file.write(f"Arquivos ignorados durante o parsing — {timestamp}\n")
+        log_file.write(f"Total: {len(skipped_files)}\n")
+        log_file.write("=" * 50 + "\n\n")
+        for filepath in skipped_files:
+            log_file.write(f"{filepath}\n")
+
+    print(f"Log de arquivos ignorados salvo em: {log_path}")
 
 
 def get_unique_addresses(frequency: dict[tuple[str, str], int]) -> list[str]:
@@ -157,7 +193,7 @@ def print_summary(frequency: dict[tuple[str, str], int]):
     print(f"{'='*50}")
     print(f"Endereços únicos (futuros vértices): {len(addresses)}")
     print(f"Conexões únicas (futuras arestas):   {len(frequency)}")
-    print(f"Total de mensagens enviadas:         {total_msgs}")
+    print(f"Total de mensagens enviadas:          {total_msgs}")
     print(f"{'='*50}")
 
     top_pairs = sorted(frequency.items(), key=lambda item: item[1], reverse=True)[:10]

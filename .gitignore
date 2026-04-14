@@ -1,3 +1,6 @@
+# Logs folder for email parsing results
+logs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

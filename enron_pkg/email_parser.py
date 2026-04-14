@@ -81,22 +81,9 @@ class Email:
 
 
 def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str, str], int]:
-    """
-    Percorre todas as pastas de usuários no dataset e lê os e-mails
-    da pasta 'sent' de cada um.
-
-    Args:
-        database_path: caminho raiz do dataset (ex: './enron_mail_database')
-        sent_folder: nome da subpasta de enviados (padrão: 'sent')
-
-    Retorna:
-        Um dicionário onde:
-            chave = (remetente, destinatário)
-            valor = número de e-mails enviados de remetente para destinatário
-    """
     frequency = defaultdict(int)
     total_emails = 0
-    total_errors = 0
+    skipped_files = []
 
     if not os.path.isdir(database_path):
         print(f"[ERRO] Diretório não encontrado: {database_path}")
@@ -131,7 +118,7 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
             parsed = Email.from_file(filepath)
 
             if parsed is None:
-                total_errors += 1
+                skipped_files.append(filepath)
                 continue
 
             total_emails += 1
@@ -139,7 +126,10 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
                 frequency[(parsed.sender, recipient)] += 1
 
     print(f"\nTotal de e-mails processados: {total_emails}")
-    print(f"Total de e-mails ignorados (sem remetente/destinatário): {total_errors}")
+    print(f"Total de e-mails ignorados: {len(skipped_files)}")
+    if skipped_files:
+        for path in skipped_files:
+            print(f"  - {path}")
     print(f"Total de conexões únicas (remetente → destinatário): {len(frequency)}")
 
     return dict(frequency)

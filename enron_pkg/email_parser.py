@@ -136,9 +136,7 @@ def load_emails(database_path: str, sent_folder: str = "sent") -> dict[tuple[str
 
             total_emails += 1
             for recipient in parsed.recipients:
-                # Evitar contar e-mails enviados para si mesmo (auto-envio)
-                if recipient != parsed.sender:
-                    frequency[(parsed.sender, recipient)] += 1
+                frequency[(parsed.sender, recipient)] += 1
 
     print(f"\nTotal de e-mails processados: {total_emails}")
     print(f"Total de e-mails ignorados (sem remetente/destinatário): {total_errors}")

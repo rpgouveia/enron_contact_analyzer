@@ -62,6 +62,16 @@ class LinkedList:
             yield current
             current = current.next
 
+    def __reversed__(self):
+        """Permite iterar sobre os nós em ordem reversa com reversed(). O(k)"""
+        nodes = []
+        current = self.head
+        while current is not None:
+            nodes.append(current)
+            current = current.next
+        for node in reversed(nodes):
+            yield node
+
     def __str__(self) -> str:
         """Representação legível da lista. O(k)"""
         nodes = [f"{node.destination}(w={node.weight})" for node in self]

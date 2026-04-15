@@ -142,3 +142,73 @@ class Graph:
                 cost = distance[i]
                 path = self.reconstruct_path(origin, i, previous)
             print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")
+
+    def depth_first_search_iterative(self, start: int, visited: list[bool]):
+        """Versão iterativa da busca em profundidade."""
+        stack = [start]
+        while stack:
+            current = stack.pop()
+            if not visited[current]:
+                visited[current] = True
+                print(f"Visitando {self.vertices[current]}")
+                for node in reversed(self.adjacency_list[current]):
+                    if not visited[node.destination]:
+                        stack.append(node.destination)
+
+    def depth_first_search_recursive(self, start: int, visited: list[bool]):
+        """Versão recursiva da busca em profundidade."""
+        visited[start] = True
+        print(f"Visitando {self.vertices[start]}")
+        for node in self.adjacency_list[start]:
+            if not visited[node.destination]:
+                self.depth_first_search_recursive(node.destination, visited)
+
+    def print_dfs_iterative(self, start: int):
+        """Inicia a busca em profundidade e imprime os vértices visitados."""
+        visited = [False] * self.size
+        print(f"Busca em profundidade a partir de {self.vertices[start]}:")
+        self.depth_first_search_iterative(start, visited)
+
+    def print_dfs_recursive(self, start: int):
+        """Inicia a busca em profundidade recursiva e imprime os vértices visitados."""
+        visited = [False] * self.size
+        print(f"Busca em profundidade recursiva a partir de {self.vertices[start]}:")
+        self.depth_first_search_recursive(start, visited)
+
+    def breadth_first_search_iterative(self, start: int):
+        """Versão iterativa da busca em largura."""
+        visited = [False] * self.size
+        queue = [start]
+        visited[start] = True
+        while queue:
+            current = queue.pop(0)
+            print(f"Visitando {self.vertices[current]}")
+            for node in self.adjacency_list[current]:
+                if not visited[node.destination]:
+                    visited[node.destination] = True
+                    queue.append(node.destination)
+
+    def breadth_first_search_recursive(self, start: int, visited: list[bool], queue: list[int]):
+        """Versão recursiva da busca em largura."""
+        if not queue:
+            return
+        current = queue.pop(0)
+        print(f"Visitando {self.vertices[current]}")
+        for node in self.adjacency_list[current]:
+            if not visited[node.destination]:
+                visited[node.destination] = True
+                queue.append(node.destination)
+        self.breadth_first_search_recursive(start, visited, queue)
+
+    def print_bfs_iterative(self, start: int):
+        """Inicia a busca em largura e imprime os vértices visitados."""
+        print(f"Busca em largura a partir de {self.vertices[start]}:")
+        self.breadth_first_search_iterative(start)
+
+    def print_bfs_recursive(self, start: int):
+        """Inicia a busca em largura recursiva e imprime os vértices visitados."""
+        visited = [False] * self.size
+        queue = [start]
+        visited[start] = True
+        print(f"Busca em largura recursiva a partir de {self.vertices[start]}:")
+        self.breadth_first_search_recursive(start, visited, queue)

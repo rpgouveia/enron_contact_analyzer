@@ -35,7 +35,7 @@ def main():
     for label, degree in graph.top_in_degree(20):
         print(f"  {label}: {degree}")
     
-    # Requisito 3: Busca em profundidade (DFS) recursivo
+    # Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
     # TODO: Implementar a função de DFS e chamar aqui para testar
 
 

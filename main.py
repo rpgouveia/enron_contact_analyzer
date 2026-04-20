@@ -22,7 +22,7 @@ def main():
 
     print(f"\nGrafo construído com {graph.size} vértices.")
 
-    # Requisito 2: Análise do grafo
+    # Requisito 2: Informações gerais do grafo
     print("\nAnálise do grafo:")
     print(f"\na) Número de vértices: {graph.size}")
     print(f"b) Número de arestas: {graph.edge_count()}")

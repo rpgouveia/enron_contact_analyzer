@@ -1,8 +1,6 @@
 from config import ENRON_DATABASE_PATH, SENT_FOLDER, LOG_DIR
-from enron_pkg import load_emails, print_summary
-from enron_pkg.email_parser import get_unique_addresses
-from graph_pkg import graph
-from graph_pkg.graph import Graph
+from enron_pkg import load_emails, get_unique_addresses, print_summary
+from graph_pkg import Graph
 
 
 def main():

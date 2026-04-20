@@ -251,3 +251,28 @@ class Graph:
         visited[start] = True
         print(f"Busca em largura recursiva a partir de {self.vertices[start]}:")
         self.breadth_first_search_recursive(visited, queue)
+
+    def bfs_reach(self, start: int, target: int) -> tuple[bool, list]:
+        """
+        Busca em largura da origem até o destino. O(n)
+        Retorna (alcançável, nós_visitados).
+        """
+        visited = [False] * self.size
+        queue = [start]
+        visited[start] = True
+        visited_order = []
+
+        while queue:
+            current = queue.pop(0)
+            visited_order.append(self.vertices[current])
+
+            if current == target:
+                return True, visited_order
+
+            for node in self.adjacency_list[current]:
+                if not visited[node.destination]:
+                    visited[node.destination] = True
+                    queue.append(node.destination)
+
+        return False, visited_order
+

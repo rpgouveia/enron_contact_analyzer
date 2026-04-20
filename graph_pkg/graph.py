@@ -144,7 +144,7 @@ class Graph:
             print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")
 
     def depth_first_search_iterative(self, start: int, visited: list[bool]):
-        """Versão iterativa da busca em profundidade."""
+        """Versão iterativa da busca em profundidade. O(v + e)"""
         stack = [start]
         while stack:
             current = stack.pop()
@@ -156,7 +156,7 @@ class Graph:
                         stack.append(node.destination)
 
     def depth_first_search_recursive(self, start: int, visited: list[bool]):
-        """Versão recursiva da busca em profundidade."""
+        """Versão recursiva da busca em profundidade. O(v + e)"""
         visited[start] = True
         print(f"Visitando {self.vertices[start]}")
         for node in self.adjacency_list[start]:
@@ -176,7 +176,7 @@ class Graph:
         self.depth_first_search_recursive(start, visited)
 
     def breadth_first_search_iterative(self, start: int):
-        """Versão iterativa da busca em largura."""
+        """Versão iterativa da busca em largura. O(n)"""
         visited = [False] * self.size
         queue = [start]
         visited[start] = True
@@ -188,8 +188,8 @@ class Graph:
                     visited[node.destination] = True
                     queue.append(node.destination)
 
-    def breadth_first_search_recursive(self, start: int, visited: list[bool], queue: list[int]):
-        """Versão recursiva da busca em largura."""
+    def breadth_first_search_recursive(self, visited: list[bool], queue: list[int]):
+        """Versão recursiva da busca em largura. O(n)"""
         if not queue:
             return
         current = queue.pop(0)
@@ -198,7 +198,7 @@ class Graph:
             if not visited[node.destination]:
                 visited[node.destination] = True
                 queue.append(node.destination)
-        self.breadth_first_search_recursive(start, visited, queue)
+        self.breadth_first_search_recursive(visited, queue)
 
     def print_bfs_iterative(self, start: int):
         """Inicia a busca em largura e imprime os vértices visitados."""
@@ -211,4 +211,4 @@ class Graph:
         queue = [start]
         visited[start] = True
         print(f"Busca em largura recursiva a partir de {self.vertices[start]}:")
-        self.breadth_first_search_recursive(start, visited, queue)
+        self.breadth_first_search_recursive(visited, queue)

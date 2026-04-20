@@ -6,11 +6,11 @@ from graph_pkg.graph import Graph
 
 
 def main():
-    # Etapa 1: Avaliação prévia do conjunto de dados
+    # Avaliação prévia do conjunto de dados
     frequency = load_emails(ENRON_DATABASE_PATH, sent_folder=SENT_FOLDER, log_dir=LOG_DIR)
     print_summary(frequency)
 
-    # Etapa 2: Construção do grafo direcionado, ponderado e rotulado
+    # Requisito 1: Construção do grafo direcionado, ponderado e rotulado
     addresses = get_unique_addresses(frequency)
     index_of = {address: index for index, address in enumerate(addresses)}
 
@@ -23,6 +23,19 @@ def main():
         graph.create_adjacency(index_of[sender], index_of[recipient], weight)
 
     print(f"\nGrafo construído com {graph.size} vértices.")
+
+    # Requisito 2: Análise do grafo
+    print("\nAnálise do grafo:")
+    print(f"\na) Número de vértices: {graph.size}")
+    print(f"b) Número de arestas: {graph.edge_count()}")
+
+    print(f"\nc) Top 20 — maior grau de saída:")
+    for label, degree in graph.top_out_degree(20):
+        print(f"  {label}: {degree}")
+
+    print(f"\nd) Top 20 — maior grau de entrada:")
+    for label, degree in graph.top_in_degree(20):
+        print(f"  {label}: {degree}")
 
 if __name__ == "__main__":
     main()

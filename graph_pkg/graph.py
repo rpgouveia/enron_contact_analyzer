@@ -143,6 +143,45 @@ class Graph:
                 path = self.reconstruct_path(origin, i, previous)
             print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")
 
+    # Métodos adicionais para o trabalho
+    def edge_count(self) -> int:
+        """Retorna o número total de arestas do grafo."""
+        total = 0
+        for i in range(self.size):
+            total += len(self.adjacency_list[i])
+        return total
+
+    def out_degree(self, vertex: int) -> int:
+        """Retorna o grau de saída do vértice."""
+        return len(self.adjacency_list[vertex])
+
+    def in_degree(self, vertex: int) -> int:
+        """Retorna o grau de entrada do vértice."""
+        count = 0
+        for i in range(self.size):
+            for node in self.adjacency_list[i]:
+                if node.destination == vertex:
+                    count += 1
+        return count
+
+    def top_out_degree(self, n: int = 20) -> list[tuple[str, int]]:
+        """Retorna os n vértices com maior grau de saída."""
+        degrees = [
+            (self.vertices[i], self.out_degree(i))
+            for i in range(self.size)
+        ]
+        degrees.sort(key=lambda item: item[1], reverse=True)
+        return degrees[:n]
+
+    def top_in_degree(self, n: int = 20) -> list[tuple[str, int]]:
+        """Retorna os n vértices com maior grau de entrada."""
+        degrees = [
+            (self.vertices[i], self.in_degree(i))
+            for i in range(self.size)
+        ]
+        degrees.sort(key=lambda item: item[1], reverse=True)
+        return degrees[:n]
+
     def depth_first_search_iterative(self, start: int, visited: list[bool]):
         """Versão iterativa da busca em profundidade. O(v + e)"""
         stack = [start]

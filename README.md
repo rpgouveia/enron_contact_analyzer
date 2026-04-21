@@ -79,6 +79,5 @@ O programa irá:
 
 - Construção do grafo direcionado, ponderado e rotulado
 - Informações gerais do grafo (vértices, arestas, graus)
-- Busca em profundidade (DFS) para alcançabilidade
 - Busca em largura (BFS) para alcançabilidade
 

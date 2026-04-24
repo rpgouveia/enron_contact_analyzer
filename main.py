@@ -30,6 +30,7 @@ def main():
     graph.print_top_out_degree(20)
     graph.print_top_in_degree(20)
     
+    # TODO: Fazer um menu interativo para o usuário escolher as operações (Informações gerais, DFS, BFS, etc.)
     # Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
     # TODO: Implementar a função de DFS e chamar aqui para testar
 

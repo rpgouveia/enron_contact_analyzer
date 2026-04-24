@@ -1,6 +1,6 @@
 from config import ENRON_DATABASE_PATH, SENT_FOLDER, LOG_DIR
 from enron_pkg import load_emails, get_unique_addresses, print_summary
-from graph_pkg import Graph
+from graph_pkg import Graph, graph
 
 
 def main():
@@ -24,16 +24,10 @@ def main():
 
     # Requisito 2: Informações gerais do grafo
     print("\nAnálise do grafo:")
-    print(f"\na) Número de vértices: {graph.size}")
-    print(f"b) Número de arestas: {graph.edge_count()}")
-
-    print(f"\nc) Top 20 — maior grau de saída:")
-    for label, degree in graph.top_out_degree(20):
-        print(f"  {label}: {degree}")
-
-    print(f"\nd) Top 20 — maior grau de entrada:")
-    for label, degree in graph.top_in_degree(20):
-        print(f"  {label}: {degree}")
+    print(f"\nNúmero de vértices: {graph.size}")
+    print(f"Número de arestas: {graph.edge_count()}")
+    graph.print_top_out_degree(20)
+    graph.print_top_in_degree(20)
     
     # Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
     # TODO: Implementar a função de DFS e chamar aqui para testar

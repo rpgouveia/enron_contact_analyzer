@@ -1,6 +1,7 @@
 from config import ENRON_DATABASE_PATH, SENT_FOLDER, LOG_DIR
 from enron_pkg import load_emails, get_unique_addresses, print_summary
-from graph_pkg import Graph, graph
+from graph_pkg import Graph
+from interface import interactive_bfs
 
 
 def main():
@@ -41,34 +42,7 @@ def main():
     # Origem e Destino para o teste de falha
         # origin = "mary.miller@enron.com"
         # destination = "drew.fossum@enron.com"
-    print(f"\nBusca em largura (BFS) — alcançabilidade entre dois indivíduos")
-    print("Digite 'sair' para encerrar.\n")
-
-    while True:
-        origin = ""
-        while origin not in index_of:
-            origin = input("Remetente (email): ").strip().lower()
-            if origin == "sair":
-                break
-            if origin not in index_of:
-                print(f"  Endereço '{origin}' não encontrado no grafo. Tente novamente.\n")
-
-        if origin == "sair":
-            break
-
-        destination = ""
-        while destination not in index_of:
-            destination = input("Destinatário (email): ").strip().lower()
-            if destination == "sair":
-                break
-            if destination not in index_of:
-                print(f"  Endereço '{destination}' não encontrado no grafo. Tente novamente.\n")
-
-        if destination == "sair":
-            break
-
-        graph.print_bfs_reach(index_of[origin], index_of[destination])
-        print()
+    interactive_bfs(graph, index_of)
 
 
 if __name__ == "__main__":

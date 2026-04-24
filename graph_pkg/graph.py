@@ -195,7 +195,6 @@ class Graph:
         for label, degree in self.top_in_degree(number):
             print(f"  {label}: {degree}")
 
-    # Métodos de busca em profundidade e largura
     # Métodos genéricos para busca em profundidade e largura
     def depth_first_search_iterative(self, start: int, visited: list[bool]):
         """Versão iterativa da busca em profundidade. O(v + e)"""

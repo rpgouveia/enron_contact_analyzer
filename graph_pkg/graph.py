@@ -144,6 +144,7 @@ class Graph:
             print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")
 
     # Métodos adicionais para o trabalho
+    # Métodos para contagem de vértices, arestas e graus
     def edge_count(self) -> int:
         """Retorna o número total de arestas do grafo."""
         total = 0
@@ -164,24 +165,38 @@ class Graph:
                     count += 1
         return count
 
-    def top_out_degree(self, n: int = 20) -> list[tuple[str, int]]:
-        """Retorna os n vértices com maior grau de saída."""
+    def top_out_degree(self, number: int = 20) -> list[tuple[str, int]]:
+        """Retorna os números de vértices com maior grau de saída."""
         degrees = [
             (self.vertices[i], self.out_degree(i))
             for i in range(self.size)
         ]
         degrees.sort(key=lambda item: item[1], reverse=True)
-        return degrees[:n]
+        return degrees[:number]
 
-    def top_in_degree(self, n: int = 20) -> list[tuple[str, int]]:
-        """Retorna os n vértices com maior grau de entrada."""
+    def top_in_degree(self, number: int = 20) -> list[tuple[str, int]]:
+        """Retorna os números de vértices com maior grau de entrada."""
         degrees = [
             (self.vertices[i], self.in_degree(i))
             for i in range(self.size)
         ]
         degrees.sort(key=lambda item: item[1], reverse=True)
-        return degrees[:n]
+        return degrees[:number]
 
+    def print_top_out_degree(self, number: int = 20):
+        """Imprime os números de vértices com maior grau de saída"""
+        print(f"\nTop {number} — maior grau de saída:")
+        for label, degree in self.top_out_degree(number):
+            print(f"  {label}: {degree}")
+
+    def print_top_in_degree(self, number: int = 20):
+        """Imprime os números de vértices com maior grau de entrada"""
+        print(f"\nTop {number} — maior grau de entrada:")
+        for label, degree in self.top_in_degree(number):
+            print(f"  {label}: {degree}")
+
+    # Métodos de busca em profundidade e largura
+    # Métodos genéricos para busca em profundidade e largura
     def depth_first_search_iterative(self, start: int, visited: list[bool]):
         """Versão iterativa da busca em profundidade. O(v + e)"""
         stack = [start]
@@ -252,6 +267,7 @@ class Graph:
         print(f"Busca em largura recursiva a partir de {self.vertices[start]}:")
         self.breadth_first_search_recursive(visited, queue)
 
+    # Métodos para verificar alcançabilidade usando busca em profundidade e largura
     def bfs_reach(self, start: int, target: int) -> tuple[bool, list]:
         """
         Busca em largura da origem até o destino. O(n)

@@ -1,7 +1,7 @@
 from config import ENRON_DATABASE_PATH, SENT_FOLDER, LOG_DIR
 from enron_pkg import load_emails, get_unique_addresses, print_summary
 from graph_pkg import Graph
-from interface import interactive_bfs
+from cli import interactive_bfs
 
 
 def main():

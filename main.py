@@ -37,25 +37,35 @@ def main():
     # Origem e Destino para o teste de sucesso
         # origin = "drew.fossum@enron.com"
         # destination = "mary.miller@enron.com"
+    
+    # Origem e Destino para o teste de falha
+        # origin = "mary.miller@enron.com"
+        # destination = "drew.fossum@enron.com"
     print(f"\nBusca em largura (BFS) — alcançabilidade entre dois indivíduos")
     print("Digite 'sair' para encerrar.\n")
 
     while True:
-        origin = input("Remetente (email): ").strip().lower()
+        origin = ""
+        while origin not in index_of:
+            origin = input("Remetente (email): ").strip().lower()
+            if origin == "sair":
+                break
+            if origin not in index_of:
+                print(f"  Endereço '{origin}' não encontrado no grafo. Tente novamente.\n")
+
         if origin == "sair":
             break
 
-        destination = input("Destinatário (email): ").strip().lower()
+        destination = ""
+        while destination not in index_of:
+            destination = input("Destinatário (email): ").strip().lower()
+            if destination == "sair":
+                break
+            if destination not in index_of:
+                print(f"  Endereço '{destination}' não encontrado no grafo. Tente novamente.\n")
+
         if destination == "sair":
             break
-
-        if origin not in index_of:
-            print(f"  Endereço '{origin}' não encontrado no grafo.\n")
-            continue
-
-        if destination not in index_of:
-            print(f"  Endereço '{destination}' não encontrado no grafo.\n")
-            continue
 
         graph.print_bfs_reach(index_of[origin], index_of[destination])
         print()

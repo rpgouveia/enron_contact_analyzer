@@ -33,22 +33,32 @@ def main():
     # TODO: Implementar a função de DFS e chamar aqui para testar
 
 
-    # Requisito 4: Busca em largura (BFS) — alcançabilidade entre dois indivíduos
+    # Requisito 4: Busca em largura (BFS) — alcançabilidade entre dois indivíduos    
+    # Origem e Destino para o teste de sucesso
+        # origin = "drew.fossum@enron.com"
+        # destination = "mary.miller@enron.com"
     print(f"\nBusca em largura (BFS) — alcançabilidade entre dois indivíduos")
-    # Origem e Destino estão hardcoded, iremos melhorar para ficar iterativo depois
-    origin = "drew.fossum@enron.com"
-    destination = "mary.miller@enron.com"
+    print("Digite 'sair' para encerrar.\n")
 
-    reachable, visited = graph.bfs_reach(index_of[origin], index_of[destination])
+    while True:
+        origin = input("Remetente (email): ").strip().lower()
+        if origin == "sair":
+            break
 
-    if reachable:
-        print(f"\n{origin} alcança {destination} via BFS.")
-    else:
-        print(f"\n{origin} NÃO alcança {destination} via BFS.")
+        destination = input("Destinatário (email): ").strip().lower()
+        if destination == "sair":
+            break
 
-    print(f"Nós visitados ({len(visited)}):")
-    for label in visited:
-        print(f"  {label}")
+        if origin not in index_of:
+            print(f"  Endereço '{origin}' não encontrado no grafo.\n")
+            continue
+
+        if destination not in index_of:
+            print(f"  Endereço '{destination}' não encontrado no grafo.\n")
+            continue
+
+        graph.print_bfs_reach(index_of[origin], index_of[destination])
+        print()
 
 
 if __name__ == "__main__":

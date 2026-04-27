@@ -32,20 +32,20 @@ class Graph:
         """Atualiza o rótulo do vértice i."""
         self.vertices[i] = value
 
-    def adjacent_vertices(self, vertex: int, adj: list) -> int:
+    def adjacent_vertices(self, vertex: int, adjacent_indices: list) -> int:
         """
-        Preenche adj com os índices dos vértices adjacentes ao vértice especificado.
+        Preenche adjacent_indices com os índices dos vértices adjacentes ao vértice especificado.
         Retorna o número de adjacentes.
         """
-        adj.clear()
-        adj.extend(self.adjacency_list[vertex].destinations())
-        return len(adj)
+        adjacent_indices.clear()
+        adjacent_indices.extend(self.adjacency_list[vertex].destinations())
+        return len(adjacent_indices)
 
     def print_adjacent_vertices(self, vertex: int):
         """Imprime os vértices adjacentes ao vértice especificado."""
-        adj = []
-        count = self.adjacent_vertices(vertex, adj)
-        labels = [self.vertices[j] for j in adj]
+        adjacent_indices = []
+        count = self.adjacent_vertices(vertex, adjacent_indices)
+        labels = [self.vertices[j] for j in adjacent_indices]
         print(f"{count} adjacente(s) ao vértice {self.vertices[vertex]}: {labels}")
 
     def convert_to_adj_matrix(self) -> list[list[int]]:
@@ -97,21 +97,21 @@ class Graph:
         distance[origin] = 0
 
         for _ in range(self.size):
-            u = -1
-            for v in range(self.size):
-                if not visited[v] and (u == -1 or distance[v] < distance[u]):
-                    u = v
+            min_distance_vertex = -1
+            for vertex in range(self.size):
+                if not visited[vertex] and (min_distance_vertex == -1 or distance[vertex] < distance[min_distance_vertex]):
+                    min_distance_vertex = vertex
 
-            if distance[u] == float("inf"):
+            if distance[min_distance_vertex] == float("inf"):
                 break
 
-            visited[u] = True
+            visited[min_distance_vertex] = True
 
-            for node in self.adjacency_list[u]:
-                new_distance = distance[u] + node.weight
+            for node in self.adjacency_list[min_distance_vertex]:
+                new_distance = distance[min_distance_vertex] + node.weight
                 if new_distance < distance[node.destination]:
                     distance[node.destination] = new_distance
-                    previous[node.destination] = u
+                    previous[node.destination] = min_distance_vertex
 
         return distance, previous
 

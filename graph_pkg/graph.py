@@ -175,7 +175,7 @@ class Graph:
         return degrees[:number]
 
     def top_in_degree(self, number: int = 20) -> list[tuple[str, int]]:
-        """Retorna os números de vértices com maior grau de entrada."""
+        """Retorna os números de vértices com maior grau de entrada. O(v² x e)"""
         degrees = [
             (self.vertices[i], self.in_degree(i))
             for i in range(self.size)

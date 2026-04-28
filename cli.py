@@ -57,11 +57,11 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
     print("Digite 'sair' para voltar ao menu.\n")
 
     while True:
-        origin = get_valid_email(index_of, "Remetente (email): ")
+        origin: str | None = get_valid_email(index_of, "Remetente (email): ")
         if origin is None:
             break
 
-        destination = get_valid_email(index_of, "Destinatário (email): ")
+        destination: str | None = get_valid_email(index_of, "Destinatário (email): ")
         if destination is None:
             break
 

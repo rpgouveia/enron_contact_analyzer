@@ -143,64 +143,6 @@ class Graph:
                 path = self.reconstruct_path(origin, i, previous)
             print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")
 
-    # Métodos adicionais para o trabalho
-    # Requisito 2 - Métodos para contagem de vértices, arestas e graus
-    def edge_count(self) -> int:
-        """Retorna o número total de arestas do grafo."""
-        total = 0
-        for i in range(self.size):
-            total += len(self.adjacency_list[i])
-        return total
-
-    def out_degree(self, vertex: int) -> int:
-        """Retorna o grau de saída do vértice."""
-        return len(self.adjacency_list[vertex])
-
-    def in_degree(self, vertex: int) -> int:
-        """Retorna o grau de entrada do vértice."""
-        count = 0
-        for i in range(self.size):
-            for node in self.adjacency_list[i]:
-                if node.destination == vertex:
-                    count += 1
-        return count
-
-    def top_out_degree(self, number: int = 20) -> list[tuple[str, int]]:
-        """Retorna os números de vértices com maior grau de saída."""
-        degrees = [
-            (self.vertices[i], self.out_degree(i))
-            for i in range(self.size)
-        ]
-        degrees.sort(key=lambda item: item[1], reverse=True)
-        return degrees[:number]
-
-    def top_in_degree(self, number: int = 20) -> list[tuple[str, int]]:
-        """Retorna os n vértices com maior grau de entrada. O(v + e)"""
-        in_degrees = [0] * self.size
-        for i in range(self.size):
-            for node in self.adjacency_list[i]:
-                in_degrees[node.destination] += 1
-
-        degrees = [
-            (self.vertices[i], in_degrees[i])
-            for i in range(self.size)
-        ]
-        degrees.sort(key=lambda item: item[1], reverse=True)
-        return degrees[:number]
-
-    def print_top_out_degree(self, number: int = 20):
-        """Imprime os números de vértices com maior grau de saída"""
-        print(f"\nTop {number} — maior grau de saída:")
-        for label, degree in self.top_out_degree(number):
-            print(f"  {label}: {degree}")
-
-    def print_top_in_degree(self, number: int = 20):
-        """Imprime os números de vértices com maior grau de entrada"""
-        print(f"\nTop {number} — maior grau de entrada:")
-        for label, degree in self.top_in_degree(number):
-            print(f"  {label}: {degree}")
-
-    # Métodos genéricos para busca em profundidade e largura
     def depth_first_search_iterative(self, start: int, visited: list[bool]):
         """Versão iterativa da busca em profundidade. O(v + e)"""
         stack = [start]
@@ -270,6 +212,63 @@ class Graph:
         visited[start] = True
         print(f"Busca em largura recursiva a partir de {self.vertices[start]}:")
         self.breadth_first_search_recursive(visited, queue)
+
+    # Métodos adicionais para o trabalho
+    # Requisito 2 - Métodos para contagem de vértices, arestas e graus
+    def edge_count(self) -> int:
+        """Retorna o número total de arestas do grafo."""
+        total = 0
+        for i in range(self.size):
+            total += len(self.adjacency_list[i])
+        return total
+
+    def out_degree(self, vertex: int) -> int:
+        """Retorna o grau de saída do vértice."""
+        return len(self.adjacency_list[vertex])
+
+    def in_degree(self, vertex: int) -> int:
+        """Retorna o grau de entrada do vértice."""
+        count = 0
+        for i in range(self.size):
+            for node in self.adjacency_list[i]:
+                if node.destination == vertex:
+                    count += 1
+        return count
+
+    def top_out_degree(self, number: int = 20) -> list[tuple[str, int]]:
+        """Retorna os números de vértices com maior grau de saída."""
+        degrees = [
+            (self.vertices[i], self.out_degree(i))
+            for i in range(self.size)
+        ]
+        degrees.sort(key=lambda item: item[1], reverse=True)
+        return degrees[:number]
+
+    def top_in_degree(self, number: int = 20) -> list[tuple[str, int]]:
+        """Retorna os n vértices com maior grau de entrada. O(v + e)"""
+        in_degrees = [0] * self.size
+        for i in range(self.size):
+            for node in self.adjacency_list[i]:
+                in_degrees[node.destination] += 1
+
+        degrees = [
+            (self.vertices[i], in_degrees[i])
+            for i in range(self.size)
+        ]
+        degrees.sort(key=lambda item: item[1], reverse=True)
+        return degrees[:number]
+
+    def print_top_out_degree(self, number: int = 20):
+        """Imprime os números de vértices com maior grau de saída"""
+        print(f"\nTop {number} — maior grau de saída:")
+        for label, degree in self.top_out_degree(number):
+            print(f"  {label}: {degree}")
+
+    def print_top_in_degree(self, number: int = 20):
+        """Imprime os números de vértices com maior grau de entrada"""
+        print(f"\nTop {number} — maior grau de entrada:")
+        for label, degree in self.top_in_degree(number):
+            print(f"  {label}: {degree}")
 
     # Métodos para verificar alcançabilidade usando busca em profundidade e largura
     # TODO: Requisito 3: dfs_reach e print_dfs_reach

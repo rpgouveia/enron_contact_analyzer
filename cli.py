@@ -42,8 +42,7 @@ def print_graph_info(graph: Graph):
     graph.print_top_in_degree(20)
 
 
-# Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
-    # TODO: Implementar a função de DFS e chamar aqui para testar
+# TODO:Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
 
 
 # Requisito 4: Busca em largura (BFS) — alcançabilidade entre dois indivíduos    
@@ -71,17 +70,24 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
         graph.print_bfs_reach(index_of[origin], index_of[destination])
         print()
 
+
+# TODO: Requisito 5
+
+
+# Requisito 6: Caminho crítico (Dijkstra) — caminho mais longo entre dois indivíduos
+    # origin = "drew.fossum@enron.com"
+    # destination = "mary.miller@enron.com"
 def interactive_critical_path(graph: Graph, index_of: dict[str, int]):
     """Loop interativo para encontrar o caminho crítico via Dijkstra."""
     print(f"\nCaminho crítico — Dijkstra com peso invertido")
     print("Digite 'sair' para voltar ao menu.\n")
 
     while True:
-        origin = get_valid_email(index_of, "Origem (email): ")
+        origin: str | None = get_valid_email(index_of, "Origem (email): ")
         if origin is None:
             break
 
-        destination = get_valid_email(index_of, "Destino (email): ")
+        destination: str | None = get_valid_email(index_of, "Destino (email): ")
         if destination is None:
             break
 

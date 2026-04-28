@@ -294,8 +294,8 @@ class Graph:
 
         return False, visited_order
 
-    def print_bfs_reach(self, start: int, target: int):
-        """Imprime o resultado da busca em largura entre dois vértices."""
+    def print_bfs_reach(self, start: int, target: int) -> tuple[bool, list]:
+        """Imprime o resultado da busca em largura entre dois vértices e retorna os dados."""
         origin_label = self.vertices[start]
         target_label = self.vertices[target]
 
@@ -303,12 +303,11 @@ class Graph:
 
         if not reachable:
             print(f"\n{origin_label} NÃO alcança {target_label} via BFS.")
-            return
+            return reachable, visited
 
         print(f"\n{origin_label} alcança {target_label} via BFS.")
-        print(f"Nós visitados ({len(visited)}):")
-        for label in visited:
-            print(f"  {label}")
+        print(f"Nós visitados: {len(visited)}")
+        return reachable, visited
 
     # TODO: Requisito 5
 

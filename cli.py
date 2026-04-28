@@ -67,7 +67,14 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
         if destination is None:
             break
 
-        graph.print_bfs_reach(index_of[origin], index_of[destination])
+        reachable, visited = graph.print_bfs_reach(index_of[origin], index_of[destination])
+
+        if reachable:
+            show_list = input("Deseja visualizar a lista de nós visitados? (s/n): ").strip().lower()
+            if show_list == "s":
+                for label in visited:
+                    print(f"  {label}")
+
         print()
 
 

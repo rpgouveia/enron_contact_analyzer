@@ -144,7 +144,7 @@ class Graph:
             print(f"  {origin_label} → {self.vertices[i]:>2}: custo={cost:>4}   caminho: {path}")
 
     # Métodos adicionais para o trabalho
-    # Métodos para contagem de vértices, arestas e graus
+    # Requisito 2 - Métodos para contagem de vértices, arestas e graus
     def edge_count(self) -> int:
         """Retorna o número total de arestas do grafo."""
         total = 0
@@ -267,6 +267,9 @@ class Graph:
         self.breadth_first_search_recursive(visited, queue)
 
     # Métodos para verificar alcançabilidade usando busca em profundidade e largura
+    # TODO: Requisito 3: dfs_reach e print_dfs_reach
+
+    # Requisito 4
     def bfs_reach(self, start: int, target: int) -> tuple[bool, list]:
         """
         Busca em largura da origem até o destino. O(n)
@@ -306,3 +309,86 @@ class Graph:
         print(f"Nós visitados ({len(visited)}):")
         for label in visited:
             print(f"  {label}")
+
+    # TODO: Requisito 5
+
+    # Requisito 6
+    def dijkstra_critical_path(self, origin: int) -> tuple[list[float], list[int]]:
+        """
+        Dijkstra adaptado com peso invertido (1/peso) para encontrar
+        o caminho crítico (maior dependência acumulada) de forma aproximada.
+        Retorna (distance, previous) onde distance usa pesos invertidos.
+        """
+        distance = [float("inf")] * self.size
+        previous = [-1] * self.size
+        visited = [False] * self.size
+
+        distance[origin] = 0
+
+        for _ in range(self.size):
+            min_distance_vertex = -1
+            for vertex in range(self.size):
+                if not visited[vertex] and (min_distance_vertex == -1 or distance[vertex] < distance[min_distance_vertex]):
+                    min_distance_vertex = vertex
+
+            if distance[min_distance_vertex] == float("inf"):
+                break
+
+            visited[min_distance_vertex] = True
+
+            for node in self.adjacency_list[min_distance_vertex]:
+                inverse_weight = 1 / node.weight
+                new_distance = distance[min_distance_vertex] + inverse_weight
+                if new_distance < distance[node.destination]:
+                    distance[node.destination] = new_distance
+                    previous[node.destination] = min_distance_vertex
+
+        return distance, previous
+
+    def reconstruct_critical_path(self, origin: int, target: int, previous: list[int]) -> tuple[list[str], int]:
+        """
+        Reconstrói o caminho crítico e calcula a dependência acumulada
+        usando os pesos originais das arestas.
+        Retorna (caminho, custo_acumulado).
+        """
+        path_indices = []
+        current = target
+
+        while current != -1:
+            path_indices.append(current)
+            current = previous[current]
+
+        if path_indices[-1] != origin:
+            return [], 0
+
+        path_indices.reverse()
+
+        # Calcular custo acumulado com pesos originais
+        accumulated_cost = 0
+        for i in range(len(path_indices) - 1):
+            source = path_indices[i]
+            dest = path_indices[i + 1]
+            for node in self.adjacency_list[source]:
+                if node.destination == dest:
+                    accumulated_cost += node.weight
+                    break
+
+        path_labels = [self.vertices[index] for index in path_indices]
+        return path_labels, accumulated_cost
+
+    def print_critical_path(self, origin: int, target: int):
+        """Imprime o caminho crítico entre dois vértices."""
+        origin_label = self.vertices[origin]
+        target_label = self.vertices[target]
+
+        distance, previous = self.dijkstra_critical_path(origin)
+
+        if distance[target] == float("inf"):
+            print(f"\n{origin_label} NÃO alcança {target_label}.")
+            return
+
+        path, accumulated_cost = self.reconstruct_critical_path(origin, target, previous)
+
+        print(f"\nCaminho crítico de {origin_label} até {target_label}:")
+        print(f"  Caminho: {' → '.join(path)}")
+        print(f"  Dependência acumulada: {accumulated_cost}")

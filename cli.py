@@ -14,10 +14,11 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
         print("1. Informações gerais do grafo")
         print("2. Busca em largura (BFS)")
         print("3. Busca em profundidade (DFS)")
+        print("4. Caminho crítico (Dijkstra)")
         print("0. Sair")
         print(f"{'='*50}")
 
-        option: str = get_menu_option(["0", "1", "2", "3"])
+        option: str = get_menu_option(["0", "1", "2", "3", "4"])
 
         if option == "1":
             print_graph_info(graph)
@@ -25,6 +26,8 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
             interactive_bfs(graph, index_of)
         elif option == "3":
             print("\n[TODO] DFS ainda não implementado.")
+        elif option == "4":
+            interactive_critical_path(graph, index_of)
         elif option == "0":
             print("\nEncerrando o programa.")
             break
@@ -66,4 +69,21 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
             break
 
         graph.print_bfs_reach(index_of[origin], index_of[destination])
+        print()
+
+def interactive_critical_path(graph: Graph, index_of: dict[str, int]):
+    """Loop interativo para encontrar o caminho crítico via Dijkstra."""
+    print(f"\nCaminho crítico — Dijkstra com peso invertido")
+    print("Digite 'sair' para voltar ao menu.\n")
+
+    while True:
+        origin = get_valid_email(index_of, "Origem (email): ")
+        if origin is None:
+            break
+
+        destination = get_valid_email(index_of, "Destino (email): ")
+        if destination is None:
+            break
+
+        graph.print_critical_path(index_of[origin], index_of[destination])
         print()

@@ -379,8 +379,8 @@ class Graph:
         path_labels = [self.vertices[index] for index in path_indices]
         return path_labels, accumulated_cost
 
-    def print_critical_path(self, origin: int, target: int):
-        """Imprime o caminho crítico entre dois vértices."""
+    def print_critical_path(self, origin: int, target: int) -> tuple[list[str], int]:
+        """Imprime o caminho crítico entre dois vértices e retorna os dados."""
         origin_label = self.vertices[origin]
         target_label = self.vertices[target]
 
@@ -388,10 +388,11 @@ class Graph:
 
         if distance[target] == float("inf"):
             print(f"\n{origin_label} NÃO alcança {target_label}.")
-            return
+            return [], 0
 
         path, accumulated_cost = self.reconstruct_critical_path(origin, target, previous)
 
         print(f"\nCaminho crítico de {origin_label} até {target_label}:")
         print(f"  Caminho: {' → '.join(path)}")
         print(f"  Dependência acumulada: {accumulated_cost}")
+        return path, accumulated_cost

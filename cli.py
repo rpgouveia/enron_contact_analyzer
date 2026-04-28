@@ -103,22 +103,12 @@ def interactive_critical_path(graph: Graph, index_of: dict[str, int]):
         if destination is None:
             break
 
-        graph.print_critical_path(index_of[origin], index_of[destination])
+        path, accumulated_cost = graph.print_critical_path(index_of[origin], index_of[destination])
 
-        if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
-            distance, previous = graph.dijkstra_critical_path(index_of[origin])
-
-            if distance[index_of[destination]] == float("inf"):
-                content = f"Dijkstra: {origin} → {destination}\n"
-                content += f"Alcançável: Não\n"
-            else:
-                path, accumulated_cost = graph.reconstruct_critical_path(
-                    index_of[origin], index_of[destination], previous
-                )
-                content = f"Dijkstra: {origin} → {destination}\n"
-                content += f"Caminho: {' → '.join(path)}\n"
-                content += f"Dependência acumulada: {accumulated_cost}\n"
-
+        if path and ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+            content = f"Dijkstra: {origin} → {destination}\n"
+            content += f"Caminho: {' → '.join(path)}\n"
+            content += f"Dependência acumulada: {accumulated_cost}\n"
             save_result_log(content, "critical_path")
 
         print()

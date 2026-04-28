@@ -12,21 +12,24 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
         print("MENU PRINCIPAL")
         print(f"{'='*50}")
         print("1. Informações gerais do grafo")
-        print("2. Busca em largura (BFS)")
-        print("3. Busca em profundidade (DFS)")
-        print("4. Caminho crítico (Dijkstra)")
+        print("2. Busca em profundidade (DFS)")
+        print("3. Busca em largura (BFS)")
+        print("4. Nós a distância D de um vértice")
+        print("5. Caminho crítico (Dijkstra)")
         print("0. Sair")
         print(f"{'='*50}")
 
-        option: str = get_menu_option(["0", "1", "2", "3", "4"])
+        option: str = get_menu_option(["0", "1", "2", "3", "4", "5"])
 
         if option == "1":
             print_graph_info(graph)
         elif option == "2":
-            interactive_bfs(graph, index_of)
+            print("\n[TODO] Requisito 3: DFS ainda não está implementado.")
         elif option == "3":
-            print("\n[TODO] DFS ainda não implementado.")
+            interactive_bfs(graph, index_of)
         elif option == "4":
+            print("\n[TODO] Requisito 5: Nós a distância D de um vértice ainda não está implementado.")
+        elif option == "5":
             interactive_critical_path(graph, index_of)
         elif option == "0":
             print("\nEncerrando o programa.")
@@ -78,7 +81,7 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
         print()
 
 
-# TODO: Requisito 5
+# TODO: Requisito 5: Nós a distância D de um vértice
 
 
 # Requisito 6: Caminho crítico (Dijkstra) — caminho mais longo entre dois indivíduos

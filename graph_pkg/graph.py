@@ -175,9 +175,14 @@ class Graph:
         return degrees[:number]
 
     def top_in_degree(self, number: int = 20) -> list[tuple[str, int]]:
-        """Retorna os números de vértices com maior grau de entrada. O(v² x e)"""
+        """Retorna os n vértices com maior grau de entrada. O(v + e)"""
+        in_degrees = [0] * self.size
+        for i in range(self.size):
+            for node in self.adjacency_list[i]:
+                in_degrees[node.destination] += 1
+
         degrees = [
-            (self.vertices[i], self.in_degree(i))
+            (self.vertices[i], in_degrees[i])
             for i in range(self.size)
         ]
         degrees.sort(key=lambda item: item[1], reverse=True)

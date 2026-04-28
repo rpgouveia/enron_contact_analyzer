@@ -2,7 +2,7 @@
 Arquivo responsável pela interface interativa com o usuário.
 """
 from graph_pkg import Graph
-from cli_utils import get_valid_email
+from cli_utils import get_valid_email, get_menu_option
 
 
 def interactive_menu(graph: Graph, index_of: dict[str, int]):
@@ -17,7 +17,7 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
         print("0. Sair")
         print(f"{'='*50}")
 
-        option: str = input("Escolha uma opção: ").strip()
+        option: str = get_menu_option(["0", "1", "2", "3"])
 
         if option == "1":
             print_graph_info(graph)
@@ -28,8 +28,6 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
         elif option == "0":
             print("\nEncerrando o programa.")
             break
-        else:
-            print("\nOpção inválida. Tente novamente.")
 
 
 # Requisito 2: Informações gerais do grafo

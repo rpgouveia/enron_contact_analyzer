@@ -2,7 +2,7 @@
 Arquivo responsável pela interface interativa com o usuário.
 """
 from graph_pkg import Graph
-from cli_utils import get_valid_email, get_menu_option
+from cli_utils import get_valid_email, get_menu_option, ask_yes_no, save_result_log
 
 
 def interactive_menu(graph: Graph, index_of: dict[str, int]):
@@ -45,17 +45,10 @@ def print_graph_info(graph: Graph):
     graph.print_top_in_degree(20)
 
 
-# TODO:Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
+# TODO: Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
 
 
-# Requisito 4: Busca em largura (BFS) — alcançabilidade entre dois indivíduos    
-    # Origem e Destino para o teste de sucesso
-        # origin = "drew.fossum@enron.com"
-        # destination = "mary.miller@enron.com"
-    
-    # Origem e Destino para o teste de falha
-        # origin = "mary.miller@enron.com"
-        # destination = "drew.fossum@enron.com"
+# Requisito 4: Busca em largura (BFS) — alcançabilidade entre dois indivíduos
 def interactive_bfs(graph: Graph, index_of: dict[str, int]):
     """Loop interativo para testar alcançabilidade via BFS."""
     print(f"\nBusca em largura (BFS) — alcançabilidade entre dois indivíduos")
@@ -73,20 +66,29 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
         reachable, visited = graph.print_bfs_reach(index_of[origin], index_of[destination])
 
         if reachable:
-            show_list: str = input("Deseja visualizar a lista de nós visitados? (s/n): ").strip().lower()
-            if show_list in ("s", "sim"):
+            if ask_yes_no("Deseja visualizar a lista de nós visitados? (s/n): "):
                 for label in visited:
                     print(f"  {label}")
+
+            if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+                content = f"BFS: {origin} → {destination}\n"
+                content += f"Alcançável: Sim\n"
+                content += f"Nós visitados ({len(visited)}):\n"
+                for label in visited:
+                    content += f"  {label}\n"
+                save_result_log(content, "bfs_reach")
+        else:
+            if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+                content = f"BFS: {origin} → {destination}\n"
+                content += f"Alcançável: Não\n"
+                save_result_log(content, "bfs_reach")
 
         print()
 
 
 # TODO: Requisito 5: Nós a distância D de um vértice
 
-
-# Requisito 6: Caminho crítico (Dijkstra) — caminho mais longo entre dois indivíduos
-    # origin = "drew.fossum@enron.com"
-    # destination = "mary.miller@enron.com"
+# Requisito 6: Caminho crítico (Dijkstra)
 def interactive_critical_path(graph: Graph, index_of: dict[str, int]):
     """Loop interativo para encontrar o caminho crítico via Dijkstra."""
     print(f"\nCaminho crítico — Dijkstra com peso invertido")
@@ -102,4 +104,21 @@ def interactive_critical_path(graph: Graph, index_of: dict[str, int]):
             break
 
         graph.print_critical_path(index_of[origin], index_of[destination])
+
+        if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+            distance, previous = graph.dijkstra_critical_path(index_of[origin])
+
+            if distance[index_of[destination]] == float("inf"):
+                content = f"Dijkstra: {origin} → {destination}\n"
+                content += f"Alcançável: Não\n"
+            else:
+                path, accumulated_cost = graph.reconstruct_critical_path(
+                    index_of[origin], index_of[destination], previous
+                )
+                content = f"Dijkstra: {origin} → {destination}\n"
+                content += f"Caminho: {' → '.join(path)}\n"
+                content += f"Dependência acumulada: {accumulated_cost}\n"
+
+            save_result_log(content, "critical_path")
+
         print()

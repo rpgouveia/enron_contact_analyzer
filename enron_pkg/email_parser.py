@@ -74,8 +74,8 @@ class Email:
         """
         addresses = []
         raw = raw.replace("\n", " ").replace("\r", " ")
-        for part in raw.split(","):
-            address = Email.__extract_address(part)
+        for raw_entry in raw.split(","):
+            address = Email.__extract_address(raw_entry)
             if address:
                 addresses.append(address)
         return addresses

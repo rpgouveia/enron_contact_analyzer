@@ -58,9 +58,9 @@ class Email:
             return None
 
         if "<" in raw and ">" in raw:
-            start = raw.index("<") + 1
-            end = raw.index(">")
-            address = raw[start:end].strip().lower()
+            address_start = raw.index("<") + 1
+            address_end = raw.index(">")
+            address = raw[address_start:address_end].strip().lower()
         else:
             address = raw.strip().lower()
 
@@ -82,8 +82,8 @@ class Email:
 
 
 def load_emails(
-            database_path: str, 
-            sent_folder: str = "sent", 
+            database_path: str,
+            sent_folder: str = "sent",
             log_dir: str = "logs"
         ) -> dict[tuple[str, str], int]:
     """
@@ -109,8 +109,9 @@ def load_emails(
         return dict(frequency)
 
     user_dirs = sorted(
-        entry for entry in os.listdir(database_path)
-        if os.path.isdir(os.path.join(database_path, entry)) and not entry.startswith(".")
+        user_dirname for user_dirname in os.listdir(database_path)
+        if os.path.isdir(os.path.join(database_path, user_dirname))
+        and not user_dirname.startswith(".")
     )
 
     print(f"Encontrados {len(user_dirs)} usuários no dataset.\n")

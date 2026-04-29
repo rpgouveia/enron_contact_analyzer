@@ -38,9 +38,9 @@ class Email:
 
         recipients = []
         for header in ("To", "Cc", "Bcc"):
-            raw = email_message.get(header, "")
-            if raw:
-                recipients.extend(Email.__extract_addresses(raw))
+            raw_addresses = email_message.get(header, "")
+            if raw_addresses:
+                recipients.extend(Email.__extract_addresses(raw_addresses))
 
         if not recipients:
             return None

@@ -27,18 +27,18 @@ class Email:
         """
         try:
             with open(filepath, "r", encoding="utf-8", errors="ignore") as file:
-                msg = email.message_from_file(file, policy=policy.default)
+                email_message = email.message_from_file(file, policy=policy.default)
         except Exception as error:
             print(f"[AVISO] Erro ao ler {filepath}: {error}")
             return None
 
-        sender = Email.__extract_address(msg.get("From", ""))
+        sender = Email.__extract_address(email_message.get("From", ""))
         if sender is None:
             return None
 
         recipients = []
         for header in ("To", "Cc", "Bcc"):
-            raw = msg.get(header, "")
+            raw = email_message.get(header, "")
             if raw:
                 recipients.extend(Email.__extract_addresses(raw))
 

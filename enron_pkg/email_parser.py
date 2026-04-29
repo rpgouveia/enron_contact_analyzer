@@ -58,11 +58,11 @@ class Email:
             return None
 
         if "<" in raw and ">" in raw:
-            address_start = raw.index("<") + 1
-            address_end = raw.index(">")
-            address = raw[address_start:address_end].strip().lower()
+            address_start: int = raw.index("<") + 1
+            address_end: int = raw.index(">")
+            address: str = raw[address_start:address_end].strip().lower()
         else:
-            address = raw.strip().lower()
+            address: str = raw.strip().lower()
 
         return address if "@" in address else None
 

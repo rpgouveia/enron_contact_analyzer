@@ -370,9 +370,9 @@ class Graph:
         accumulated_cost = 0
         for i in range(len(path_indices) - 1):
             source = path_indices[i]
-            dest = path_indices[i + 1]
+            destination = path_indices[i + 1]
             for node in self.adjacency_list[source]:
-                if node.destination == dest:
+                if node.destination == destination:
                     accumulated_cost += node.weight
                     break
 

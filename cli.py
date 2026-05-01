@@ -24,11 +24,11 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
         if option == "1":
             print_graph_info(graph)
         elif option == "2":
-            print("\n[TODO] Requisito 3: DFS ainda não está implementado.")
+            interactive_dfs(graph, index_of)
         elif option == "3":
             interactive_bfs(graph, index_of)
         elif option == "4":
-            print("\n[TODO] Requisito 5: Nós a distância D de um vértice ainda não está implementado.")
+            interactive_distance_d(graph, index_of)
         elif option == "5":
             interactive_critical_path(graph, index_of)
         elif option == "0":
@@ -45,7 +45,41 @@ def print_graph_info(graph: Graph):
     graph.print_top_in_degree(20)
 
 
-# TODO: Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
+# Requisito 3: Busca em profundidade (DFS) — alcançabilidade entre dois indivíduos
+def interactive_dfs(graph: Graph, index_of: dict[str, int]):
+    """Loop interativo para testar alcançabilidade via DFS."""
+    print(f"\nBusca em profundidade (DFS) — alcançabilidade entre dois indivíduos")
+    print("Digite 'sair' para voltar ao menu.\n")
+
+    while True:
+        origin: str | None = get_valid_email(index_of, "Remetente (email): ")
+        if origin is None:
+            break
+
+        destination: str | None = get_valid_email(index_of, "Destinatário (email): ")
+        if destination is None:
+            break
+
+        reachable, visited = graph.print_dfs_reach(index_of[origin], index_of[destination])
+
+        if reachable:
+            if ask_yes_no("Deseja visualizar a lista de nós visitados? (s/n): "):
+                for label in visited:
+                    print(f"  {label}")
+
+            if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+                content = f"DFS: {origin} → {destination}\n"
+                content += f"Alcançável: Sim\n"
+                content += f"Nós visitados ({len(visited)}):\n"
+                for label in visited:
+                    content += f"  {label}\n"
+                save_result_log(content, "dfs_reach")
+        else:
+            if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+                content = f"DFS: {origin} → {destination}\n"
+                content += f"Alcançável: Não\n"
+                save_result_log(content, "dfs_reach")
+        print()
 
 
 # Requisito 4: Busca em largura (BFS) — alcançabilidade entre dois indivíduos
@@ -86,7 +120,40 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
         print()
 
 
-# TODO: Requisito 5: Nós a distância D de um vértice
+# Requisito 5: Nós a distância D de um vértice
+def interactive_distance_d(graph: Graph, index_of: dict[str, int]):
+    """Loop interativo para buscar nós a uma distância D."""
+    print(f"\nNós a uma distância exata D de um vértice")
+    print("Digite 'sair' no email para voltar ao menu.\n")
+
+    while True:
+        origin: str | None = get_valid_email(index_of, "Nó origem (email): ")
+        if origin is None:
+            break
+
+        distance_str = input("Distância (D): ").strip()
+        if not distance_str.isdigit():
+            print("  Distância inválida. Digite um número inteiro.\n")
+            continue
+            
+        distance = int(distance_str)
+        nodes = graph.nodes_at_distance(index_of[origin], distance)
+
+        print(f"\nEncontrados {len(nodes)} nós a uma distância de {distance} aresta(s) de {origin}.")
+        
+        if nodes and ask_yes_no("Deseja visualizar os nós encontrados? (s/n): "):
+            for node in nodes:
+                print(f"  {node}")
+
+        if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+            content = f"Origem: {origin}\n"
+            content += f"Distância: {distance}\n"
+            content += f"Nós encontrados ({len(nodes)}):\n"
+            for node in nodes:
+                content += f"  {node}\n"
+            save_result_log(content, "distance_d")
+        print()
+
 
 # Requisito 6: Caminho crítico (Dijkstra)
 def interactive_critical_path(graph: Graph, index_of: dict[str, int]):

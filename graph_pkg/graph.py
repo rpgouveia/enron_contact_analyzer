@@ -213,7 +213,6 @@ class Graph:
         print(f"Busca em largura recursiva a partir de {self.vertices[start]}:")
         self.breadth_first_search_recursive(visited, queue)
 
-    # Métodos adicionais para o trabalho
     # Requisito 2 - Métodos para contagem de vértices, arestas e graus
     def edge_count(self) -> int:
         """Retorna o número total de arestas do grafo."""
@@ -270,10 +269,51 @@ class Graph:
         for label, degree in self.top_in_degree(number):
             print(f"  {label}: {degree}")
 
-    # Métodos para verificar alcançabilidade usando busca em profundidade e largura
-    # TODO: Requisito 3: dfs_reach e print_dfs_reach
 
-    # Requisito 4
+    # Requisito 3 - DFS Reach
+    def dfs_reach(self, start: int, target: int) -> tuple[bool, list]:
+        """
+        Busca em profundidade (DFS) da origem até o destino. O(v + e)
+        Retorna (alcançável, nós_visitados).
+        """
+        visited = [False] * self.size
+        stack = [start]
+        visited_order = []
+
+        while stack:
+            current = stack.pop()
+            
+            if not visited[current]:
+                visited[current] = True
+                visited_order.append(self.vertices[current])
+
+                if current == target:
+                    return True, visited_order
+
+                # Inserção reversa na pilha para manter a ordem da esquerda para a direita
+                for node in reversed(self.adjacency_list[current]):
+                    if not visited[node.destination]:
+                        stack.append(node.destination)
+
+        return False, visited_order
+
+    def print_dfs_reach(self, start: int, target: int) -> tuple[bool, list]:
+        """Imprime o resultado da busca em profundidade entre dois vértices e retorna os dados."""
+        origin_label = self.vertices[start]
+        target_label = self.vertices[target]
+
+        reachable, visited = self.dfs_reach(start, target)
+
+        if not reachable:
+            print(f"\n{origin_label} NÃO alcança {target_label} via DFS.")
+            return reachable, visited
+
+        print(f"\n{origin_label} alcança {target_label} via DFS.")
+        print(f"Nós visitados: {len(visited)}")
+        return reachable, visited
+
+
+    # Requisito 4 - BFS Reach
     def bfs_reach(self, start: int, target: int) -> tuple[bool, list]:
         """
         Busca em largura da origem até o destino. O(n)
@@ -313,9 +353,39 @@ class Graph:
         print(f"Nós visitados: {len(visited)}")
         return reachable, visited
 
-    # TODO: Requisito 5
 
-    # Requisito 6
+    # Requisito 5 - Nós a distância D
+    def nodes_at_distance(self, start: int, distance: int) -> list[str]:
+        """
+        Retorna uma lista com os rótulos dos nós que estão a uma distância exata D de um nó origem.
+        Utiliza lógica de BFS para controle de níveis.
+        """
+        if distance == 0:
+            return [self.vertices[start]]
+
+        visited = [False] * self.size
+        # A fila armazena tuplas: (vértice_atual, distancia_atual)
+        queue = [(start, 0)]
+        visited[start] = True
+        result = []
+
+        while queue:
+            current, current_dist = queue.pop(0)
+
+            # Se atingiu a distância desejada, adiciona à lista
+            if current_dist == distance:
+                result.append(self.vertices[current])
+                continue # Não precisa expandir os vizinhos deste nó (já estão a D+1)
+
+            for node in self.adjacency_list[current]:
+                if not visited[node.destination]:
+                    visited[node.destination] = True
+                    queue.append((node.destination, current_dist + 1))
+
+        return result
+
+
+    # Requisito 6 - Caminho Crítico
     def dijkstra_critical_path(self, origin: int) -> tuple[list[float], list[int]]:
         """
         Dijkstra adaptado com peso invertido (1/peso) para encontrar

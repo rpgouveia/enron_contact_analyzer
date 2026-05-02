@@ -131,16 +131,16 @@ def interactive_distance_d(graph: Graph, index_of: dict[str, int]):
         if origin is None:
             break
 
-        distance_str = input("Distância (D): ").strip()
-        if not distance_str.isdigit():
+        while True:
+            distance_str = input("Distância (D): ").strip()
+            if distance_str.isdigit():
+                break
             print("  Distância inválida. Digite um número inteiro.\n")
-            continue
-            
+
         distance = int(distance_str)
         nodes = graph.nodes_at_distance(index_of[origin], distance)
-
         print(f"\nEncontrados {len(nodes)} nós a uma distância de {distance} aresta(s) de {origin}.")
-        
+
         if nodes and ask_yes_no("Deseja visualizar os nós encontrados? (s/n): "):
             for node in nodes:
                 print(f"  {node}")

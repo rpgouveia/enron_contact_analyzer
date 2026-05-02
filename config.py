@@ -11,6 +11,9 @@ load_dotenv()
 ENRON_DATABASE_PATH = os.getenv("ENRON_DATABASE_PATH")
 SENT_FOLDER = os.getenv("SENT_FOLDER")
 LOG_DIR = os.getenv("LOG_DIR")
+CACHE_DIR = os.getenv("CACHE_DIR", "cache")
+CACHE_FILENAME = os.getenv("CACHE_FILENAME", "frequency.pkl")
+CACHE_PATH = os.path.join(CACHE_DIR, CACHE_FILENAME)
 
 required_variables: dict[str, str | None] = {
     "ENRON_DATABASE_PATH": ENRON_DATABASE_PATH,

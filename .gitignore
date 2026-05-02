@@ -1,3 +1,6 @@
+# Binary file for caching email parsing results
+cache/
+
 # Logs folder for email parsing results
 logs/
 

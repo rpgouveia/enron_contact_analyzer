@@ -38,8 +38,7 @@ def load_frequency() -> dict[tuple[str, str], int]:
 
 
 def main():
-    # Avaliação prévia do conjunto de dados
-    frequency = load_frequency()
+    frequency: dict[tuple[str, str], int] = load_frequency()
 
     # Requisito 1: Construção do grafo direcionado, ponderado e rotulado
     addresses: list[str] = get_unique_addresses(frequency)

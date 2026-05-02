@@ -8,9 +8,9 @@ Analisador de rede de contatos baseado na base de dados de e-mails Enron. O proj
 - **Análise de frequência**: Calcula a frequência de contatos entre pares de usuários
 - **Construção de grafo**: Cria um grafo direcionado, ponderado e rotulado
 - **Análise de graus**: Identifica os principais remetentes (saída) e destinatários (entrada)
-- **Busca em profundidade (DFS)**: Próxima implementação
+- **Busca em profundidade (DFS)**: Verifica alcançabilidade entre dois indivíduos
 - **Busca em largura (BFS)**: Verifica alcançabilidade entre dois indivíduos
-- **Nós a distância D de um vértice**: Próxima implementação
+- **Nós a distância D de um vértice**: Retorna os nós a uma distância exata de arestas
 - **Caminho crítico (Dijkstra)**: Encontra o caminho de maior dependência acumulada entre dois indivíduos
 
 ## Estrutura do Projeto
@@ -94,9 +94,11 @@ MENU PRINCIPAL
 ==================================================
 ```
 
-## Requisitos Implementados
+## Projeto
 
-- Construção do grafo direcionado, ponderado e rotulado
-- Informações gerais do grafo (vértices, arestas, graus)
-- Busca em largura (BFS) para alcançabilidade
-- Caminho crítico via Dijkstra com peso invertido
+PUCPR Grafos — Projeto Colaborativo 1
+
+## Autores
+
+- Angelo Piovezan
+- Renato Gouveia

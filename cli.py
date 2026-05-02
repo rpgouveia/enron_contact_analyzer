@@ -124,6 +124,7 @@ def interactive_bfs(graph: Graph, index_of: dict[str, int]):
 def interactive_distance_d(graph: Graph, index_of: dict[str, int]):
     """Loop interativo para buscar nós a uma distância D."""
     print(f"\nNós a uma distância exata D de um vértice")
+    print("Distância 1 = destinatários diretos, 2 = destinatários dos destinatários, etc.")
     print("Digite 'sair' no email para voltar ao menu.\n")
 
     while True:

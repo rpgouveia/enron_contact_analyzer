@@ -36,7 +36,9 @@ enron_contact_analyzer/
 
 ## Estrutura Esperada do Dataset
 
-O banco de dados Enron deve estar organizado da seguinte forma:
+O dataset Enron é público e está disponível em: https://www.cs.cmu.edu/~enron/
+
+O banco de dados deve estar organizado da seguinte forma:
 
 ```
 enron_mail_database/

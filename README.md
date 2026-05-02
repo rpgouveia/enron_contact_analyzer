@@ -30,6 +30,7 @@ enron_contact_analyzer/
 │   ├── __init__.py
 │   ├── graph.py              # Classe principal do grafo
 │   └── linked_list.py        # Estrutura de lista encadeada para adjacências
+├── cache/                    # Cache de dados processados (gitignored)
 └── logs/                     # Diretório para arquivos de log (gitignored)
 ```
 
@@ -59,6 +60,8 @@ enron_mail_database/
    ENRON_DATABASE_PATH=./enron_mail_database
    SENT_FOLDER=sent
    LOG_DIR=logs
+   CACHE_DIR=cache
+   CACHE_FILENAME=frequency.pkl
    ```
 3. Instale as dependências:
    ```bash
@@ -74,10 +77,9 @@ python main.py
 ```
 
 O programa irá:
-1. Carregar todos os e-mails da pasta `sent` de cada usuário
-2. Calcular a frequência de contatos entre pares de usuários
-3. Construir o grafo com as relações identificadas
-4. Exibir um menu interativo com as opções disponíveis
+1. Carregar os dados (do cache ou processando os e-mails do dataset)
+2. Construir o grafo com as relações identificadas
+3. Exibir um menu interativo com as opções disponíveis
 
 ## Menu Interativo
 

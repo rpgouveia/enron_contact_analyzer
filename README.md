@@ -30,6 +30,9 @@ enron_contact_analyzer/
 │   ├── __init__.py
 │   ├── graph.py              # Classe principal do grafo
 │   └── linked_list.py        # Estrutura de lista encadeada para adjacências
+├── tests/                    # Scripts de diagnóstico e validação
+│   ├── test_env_config.py    # Verifica variáveis de ambiente e caminhos
+│   └── test_file_access.py   # Verifica acesso aos arquivos do dataset
 ├── cache/                    # Cache de dados processados (gitignored)
 └── logs/                     # Diretório para arquivos de log (gitignored)
 ```
@@ -96,6 +99,25 @@ MENU PRINCIPAL
 5. Caminho crítico (Dijkstra)
 0. Sair
 ==================================================
+```
+
+## Compatibilidade Windows
+
+Ao extrair o dataset Enron (`tar.gz`) no Windows, os arquivos de e-mail podem ser criados com um ponto no final do nome (ex: `1.`, `2.`, `3.` ao invés de `1`, `2`, `3`). Isso é um artefato de como o Windows lida com arquivos sem extensão vindos de sistemas Unix.
+
+O `email_parser.py` trata essa situação automaticamente usando o prefixo `\\?\` no caminho dos arquivos no Windows, que impede a normalização de nomes pelo sistema operacional. No Linux, o comportamento é transparente.
+
+## Scripts de Diagnóstico
+
+A pasta `tests/` contém scripts criados durante o desenvolvimento para diagnosticar problemas de compatibilidade entre Linux e Windows na leitura do dataset:
+
+- **test_env_config.py**: Verifica se as variáveis de ambiente estão configuradas corretamente e se os caminhos do dataset são acessíveis.
+- **test_file_access.py**: Verifica se os arquivos de e-mail dentro do dataset são reconhecidos pelo sistema operacional (identifica problemas como o ponto trailing no Windows).
+
+Para executar:
+```bash
+python tests/test_env_config.py
+python tests/test_file_access.py
 ```
 
 ## Projeto

@@ -124,7 +124,7 @@ def load_emails(
 
         email_files = sorted(
             filename for filename in os.listdir(sent_path)
-            if os.path.isfile(os.path.join(sent_path, filename))
+            if not os.path.isdir(os.path.join(sent_path, filename))
             and not filename.startswith(".")
         )
 
@@ -135,6 +135,9 @@ def load_emails(
             leave=False,
         ):
             filepath = os.path.join(sent_path, email_file)
+            # Prefixo \\?\ preserva pontos finais no Windows
+            if os.name == "nt":
+                filepath = "\\\\?\\" + filepath
             parsed = Email.from_file(filepath)
 
             if parsed is None:

@@ -11,10 +11,7 @@ from enron_pkg import load_emails, get_unique_addresses
 from graph_pkg import Graph
 
 
-# ─────────────────────────────────────────────
 # Carregamento e construção do grafo (com cache)
-# ─────────────────────────────────────────────
-
 @st.cache_data
 def load_data():
     """Carrega frequências do cache ou faz o parsing dos emails."""
@@ -46,10 +43,8 @@ def build_graph(_frequency):
     return graph, index_of, addresses
 
 
-# ─────────────────────────────────────────────
-# Páginas
-# ─────────────────────────────────────────────
 
+# Páginas
 def page_general_info(graph, frequency):
     """Página de informações gerais do grafo."""
     st.header("Informações Gerais do Grafo")
@@ -202,10 +197,7 @@ def page_top_pairs(frequency):
         st.text(f"{rank:>3}. {sender} → {recipient}: {count} mensagem(ns)")
 
 
-# ─────────────────────────────────────────────
 # App principal
-# ─────────────────────────────────────────────
-
 def main():
     st.set_page_config(
         page_title="Enron Contact Analyzer",

@@ -16,10 +16,11 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
         print("3. Busca em largura (BFS)")
         print("4. Nós a distância D de um vértice")
         print("5. Caminho crítico (Dijkstra)")
+        print("6. Componentes e conexidade")
         print("0. Sair")
         print(f"{'='*50}")
 
-        option: str = get_menu_option(["0", "1", "2", "3", "4", "5"])
+        option: str = get_menu_option(["0", "1", "2", "3", "4", "5", "6"])
 
         if option == "1":
             print_graph_info(graph)
@@ -31,6 +32,8 @@ def interactive_menu(graph: Graph, index_of: dict[str, int]):
             interactive_distance_d(graph, index_of)
         elif option == "5":
             interactive_critical_path(graph, index_of)
+        elif option == "6":
+            interactive_components(graph)
         elif option == "0":
             print("\nEncerrando o programa.")
             break
@@ -180,3 +183,43 @@ def interactive_critical_path(graph: Graph, index_of: dict[str, int]):
             save_result_log(content, "critical_path")
 
         print()
+
+
+# Metodologia Ativa: Componentes e conexidade
+def interactive_components(graph: Graph):
+    """Exibe análise de componentes e conexidade do grafo."""
+    print(f"\nAnalisando componentes e conexidade...")
+    print("(Esta operação pode levar alguns segundos no grafo da Enron)\n")
+
+    components = graph.find_components()
+    cyclic = graph.is_cyclic()
+    connected = len(components) == 1
+
+    print(f"  Grafo cíclico:           {'Sim' if cyclic else 'Não'}")
+    print(f"  Grafo fracamente conexo: {'Sim' if connected else 'Não'}")
+    print(f"  Total de componentes:    {len(components)}")
+    components_sorted = sorted(components, key=len, reverse=True)
+    print(f"\n  Tamanho dos componentes (maior → menor):")
+
+    for index, component in enumerate(components_sorted, 1):
+        print(f"    Componente {index}: {len(component)} vértice(s)")
+    
+    if ask_yes_no("\nDeseja visualizar os vértices de cada componente? (s/n): "):
+        for index, component in enumerate(components_sorted, 1):
+            print(f"\n  Componente {index} ({len(component)} vértice(s)):")
+            for label in component:
+                print(f"    {label}")
+    
+    if ask_yes_no("Deseja salvar o resultado em log? (s/n): "):
+        content = "Análise de componentes e conexidade\n"
+        content += f"Grafo cíclico:           {'Sim' if cyclic else 'Não'}\n"
+        content += f"Grafo fracamente conexo: {'Sim' if connected else 'Não'}\n"
+        content += f"Total de componentes:    {len(components)}\n\n"
+        for index, component in enumerate(components_sorted, 1):
+            content += f"Componente {index} ({len(component)} vértice(s)):\n"
+            for label in component:
+                content += f"  {label}\n"
+            content += "\n"
+        save_result_log(content, "components")
+    
+    print()

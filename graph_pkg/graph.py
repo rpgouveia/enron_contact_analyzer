@@ -466,3 +466,111 @@ class Graph:
         print(f"  Caminho: {' → '.join(path)}")
         print(f"  Dependência acumulada: {accumulated_cost}")
         return path, accumulated_cost
+
+
+    # Metodologia Ativa - Componentes, conexidade e ciclos
+    def is_cyclic(self) -> bool:
+            """
+            Verifica se o grafo direcionado contém algum ciclo. O(v + e)
+
+            Utiliza DFS iterativa com coloração de três estados:
+                NÃO_VISITADO  → vértice ainda não descoberto
+                EM_PROGRESSO  → vértice na pilha de chamada atual (caminho ativo)
+                CONCLUÍDO     → vértice totalmente explorado
+
+            Uma aresta de retorno (back edge) é detectada quando um vizinho já
+            está EM_PROGRESSO, ou seja, faz parte do caminho ativo atual — o que
+            caracteriza a existência de um ciclo.
+            """
+            NAO_VISITADO = 0
+            EM_PROGRESSO = 1
+            CONCLUIDO    = 2
+
+            color = [NAO_VISITADO] * self.size
+
+            for start in range(self.size):
+                if color[start] != NAO_VISITADO:
+                    continue
+                color[start] = EM_PROGRESSO
+                stack = [(start, iter(self.adjacency_list[start]))]
+                while stack:
+                    vertex, neighbor_iterator = stack[-1]
+                    try:
+                        node = next(neighbor_iterator)
+                        if color[node.destination] == EM_PROGRESSO:
+                            # Aresta de retorno: ciclo encontrado
+                            return True
+                        if color[node.destination] == NAO_VISITADO:
+                            color[node.destination] = EM_PROGRESSO
+                            stack.append(
+                                (node.destination, iter(self.adjacency_list[node.destination]))
+                            )
+                    except StopIteration:
+                        # Todos os vizinhos deste vértice foram explorados
+                        color[vertex] = CONCLUIDO
+                        stack.pop()
+            return False
+
+    def find_components(self) -> list[list[str]]:
+        """
+        Identifica e retorna os componentes fracamente conexos do grafo.
+
+        Componentes fracamente conexos são obtidos ignorando-se o sentido das
+        arestas (tratando o grafo direcionado como não-direcionado) e agrupando
+        todos os vértices mutuamente alcançáveis.
+
+        O algoritmo:
+            1. Constrói uma adjacência bidirecional auxiliar.
+            2. Executa BFS a partir de cada vértice ainda não visitado.
+            3. Cada BFS completa descobre exatamente um componente.
+
+        Retorna uma lista de componentes, onde cada componente é uma lista
+        com os rótulos dos vértices que o compõem.
+        """
+        # Adjacência bidirecional para tratar o grafo como não-direcionado
+        undirected_neighbors: list[set[int]] = [set() for _ in range(self.size)]
+        for source in range(self.size):
+            for node in self.adjacency_list[source]:
+                undirected_neighbors[source].add(node.destination)
+                undirected_neighbors[node.destination].add(source)
+
+        visited = [False] * self.size
+        components: list[list[str]] = []
+
+        # BFS
+        for start in range(self.size):
+            if visited[start]:
+                continue
+            component: list[str] = []
+            queue = [start]
+            visited[start] = True
+
+            while queue:
+                current = queue.pop(0)
+                component.append(self.vertices[current])
+                for neighbor in undirected_neighbors[current]:
+                    if not visited[neighbor]:
+                        visited[neighbor] = True
+                        queue.append(neighbor)
+            
+            components.append(component)
+        return components
+
+    def is_connected(self) -> bool:
+        """
+        Verifica se o grafo é fracamente conexo.
+
+        Um grafo direcionado é fracamente conexo quando existe exatamente
+        um componente fracamente conexo, ou seja, todos os vértices estão
+        ligados entre si ao se ignorar o sentido das arestas.
+        """
+        # TODO: implementar
+        raise NotImplementedError
+
+    def print_components(self):
+        """
+        Imprime um resumo dos componentes fracamente conexos do grafo,
+        listando o tamanho de cada componente e seus vértices.
+        """
+        # TODO: implementar
+        raise NotImplementedError

@@ -193,7 +193,7 @@ def interactive_components(graph: Graph):
 
     components = graph.find_components()
     cyclic = graph.is_cyclic()
-    connected = len(components) == 1
+    connected = len(components) == 1 # Refatorar quando implementar is_connected()
 
     print(f"  Grafo cíclico:           {'Sim' if cyclic else 'Não'}")
     print(f"  Grafo fracamente conexo: {'Sim' if connected else 'Não'}")
